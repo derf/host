@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 	for (address = result; address != NULL; address = address->ai_next) {
 		if (addr_to_ip(address, ip_address, sizeof(ip_address)) == 0)
 			continue;
-		puts(ip_address);
+		printf("%-40s ", ip_address);
 		ret = getnameinfo(address->ai_addr, address->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
 		if (ret != 0) {
 			fprintf(stderr, "getnameinfo: %s\n", gai_strerror(ret));
