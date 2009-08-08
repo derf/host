@@ -10,6 +10,26 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+static inline int addr_to_ip(const struct addrinfo *address, char *ip, int length) {
+	void *ptr;
+	switch (address->ai_family) {
+		case AF_INET:
+			ptr = &((struct sockaddr_in *) address->ai_addr)->sin_addr;
+			break;
+		case AF_INET6:
+			ptr = &((struct sockaddr_in6 *) address->ai_addr)->sin6_addr;
+			break;
+		default:
+			fprintf(stderr, "Unknown address family: %u\n", address->ai_family);
+			return 0;
+	}
+	if (inet_ntop(address->ai_family, ptr, ip, length) == NULL) {
+		perror("inet_ntop");
+		return 0;
+	}
+	return 1;
+}
+
 int main(int argc, char **argv) {
 	struct addrinfo hints = { 0, AF_UNSPEC, SOCK_DGRAM, 0, 0, NULL, NULL, NULL };
 	struct addrinfo *result, *address;
@@ -26,21 +46,8 @@ int main(int argc, char **argv) {
 	}
 
 	for (address = result; address != NULL; address = address->ai_next) {
-		switch (address->ai_family) {
-			case AF_INET:
-				ptr = &((struct sockaddr_in *) address->ai_addr)->sin_addr;
-				break;
-			case AF_INET6:
-				ptr = &((struct sockaddr_in6 *) address->ai_addr)->sin6_addr;
-				break;
-			default:
-				fprintf(stderr, "Unknown address family: %u\n", address->ai_family);
-				goto loop;
-		}
-		if (inet_ntop(address->ai_family, ptr, ip_address, sizeof(ip_address)) == NULL) {
-			perror("inet_ntop");
+		if (addr_to_ip(address, ip_address, sizeof(ip_address)) == 0)
 			continue;
-		}
 		puts(ip_address);
 		ret = getnameinfo(address->ai_addr, address->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
 		if (ret != 0) {
@@ -48,7 +55,6 @@ int main(int argc, char **argv) {
 			continue;
 		}
 		puts(hostname);
-loop:;
 	}
 	freeaddrinfo(address);
 	return(EXIT_SUCCESS);
