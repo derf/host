@@ -36,8 +36,11 @@ int main(int argc, char **argv) {
 	char hostname[NI_MAXHOST];
 	char ip_address[INET6_ADDRSTRLEN];
 	int ret;
-	struct in_addr addr;
-	void *ptr;
+
+	if (argc < 2) {
+		fprintf(stderr, "Usage: %s <hostname>\n", argv[0]);
+		return EXIT_FAILURE;
+	}
 
 	ret = getaddrinfo(argv[1], NULL, &hints, &result);
 	if (ret != 0) {
