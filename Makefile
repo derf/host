@@ -4,6 +4,7 @@ prefix = /usr/local
 all: bin/host
 
 bin/%: src/%.c
+	mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $<
 
 install: bin/host
