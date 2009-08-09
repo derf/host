@@ -12,9 +12,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#define INPUT_HOST 1
-#define INPUT_IP   2
-
 /**
  * \brief Print some usage information
  */
@@ -57,7 +54,11 @@ int main(int argc, char **argv) {
 	char hostname[NI_MAXHOST];
 	char ip_address[INET6_ADDRSTRLEN];
 	int ret;
-	int input_type = 0;
+	enum {
+		INPUT_NONE,
+		INPUT_IP,
+		INPUT_HOST
+	} input_type = INPUT_NONE;
 	char option;
 
 	while ((option = getopt(argc, argv, "46")) != -1) {
@@ -88,7 +89,7 @@ int main(int argc, char **argv) {
 	for (address = result; address != NULL; address = address->ai_next) {
 		if (addr_to_ip(address, ip_address, sizeof(ip_address)) == 0)
 			continue;
-		if (input_type == 0) {
+		if (input_type == INPUT_NONE) {
 			if (strcmp(ip_address, argv[optind]) == 0)
 				input_type = INPUT_IP;
 			else
