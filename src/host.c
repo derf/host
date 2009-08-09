@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -13,6 +14,13 @@
 
 #define INPUT_HOST 1
 #define INPUT_IP   2
+
+/**
+ * \brief Print some usage information
+ */
+
+#define PRINT_USAGE \
+	fprintf(stderr, "Usage: %s [-46] <hostname>\n", argv[0])
 
 /**
  * \brief convert addrinfo to simple IP address
@@ -50,23 +58,38 @@ int main(int argc, char **argv) {
 	char ip_address[INET6_ADDRSTRLEN];
 	int ret;
 	int input_type = 0;
+	char option;
 
-	if (argc < 2) {
-		fprintf(stderr, "Usage: %s <hostname>\n", argv[0]);
+	while ((option = getopt(argc, argv, "46")) != -1) {
+		switch (option) {
+			case '4':
+				hints.ai_family = AF_INET;
+				break;
+			case '6':
+				hints.ai_family = AF_INET6;
+				break;
+			default:
+				PRINT_USAGE;
+				return EXIT_FAILURE;
+		}
+	}
+
+	if (optind >= argc) {
+		PRINT_USAGE;
 		return EXIT_FAILURE;
 	}
 
-	ret = getaddrinfo(argv[1], NULL, &hints, &result);
+	ret = getaddrinfo(argv[optind], NULL, &hints, &result);
 	if (ret != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(ret));
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 
 	for (address = result; address != NULL; address = address->ai_next) {
 		if (addr_to_ip(address, ip_address, sizeof(ip_address)) == 0)
 			continue;
 		if (input_type == 0) {
-			if (strcmp(ip_address, argv[1]) == 0)
+			if (strcmp(ip_address, argv[optind]) == 0)
 				input_type = INPUT_IP;
 			else
 				input_type = INPUT_HOST;
