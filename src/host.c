@@ -5,10 +5,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+
+#define INPUT_HOST 1
+#define INPUT_IP   2
 
 /**
  * \brief convert addrinfo to simple IP address
@@ -45,6 +49,7 @@ int main(int argc, char **argv) {
 	char hostname[NI_MAXHOST];
 	char ip_address[INET6_ADDRSTRLEN];
 	int ret;
+	int input_type = 0;
 
 	if (argc < 2) {
 		fprintf(stderr, "Usage: %s <hostname>\n", argv[0]);
@@ -60,13 +65,22 @@ int main(int argc, char **argv) {
 	for (address = result; address != NULL; address = address->ai_next) {
 		if (addr_to_ip(address, ip_address, sizeof(ip_address)) == 0)
 			continue;
-		printf("%-40s ", ip_address);
-		ret = getnameinfo(address->ai_addr, address->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-		if (ret != 0) {
-			fprintf(stderr, "getnameinfo: %s\n", gai_strerror(ret));
-			continue;
+		if (input_type == 0) {
+			if (strcmp(ip_address, argv[1]) == 0)
+				input_type = INPUT_IP;
+			else
+				input_type = INPUT_HOST;
 		}
-		puts(hostname);
+		if (input_type == INPUT_HOST)
+			puts(ip_address);
+		else {
+			ret = getnameinfo(address->ai_addr, address->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+			if (ret != 0) {
+				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(ret));
+				continue;
+			}
+			puts(hostname);
+		}
 	}
 	freeaddrinfo(address);
 	return(EXIT_SUCCESS);
