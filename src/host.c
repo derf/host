@@ -17,7 +17,7 @@
  */
 
 #define PRINT_USAGE \
-	fprintf(stderr, "Usage: %s [-46] <hostname>\n", argv[0])
+	fprintf(stderr, "Usage: %s [-46r] <hostname>\n", argv[0])
 
 /**
  * \brief convert addrinfo to simple IP address
@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
 	char hostname[NI_MAXHOST];
 	char ip_address[INET6_ADDRSTRLEN];
 	int ret;
+	int show_rdns = 0;
 	enum {
 		INPUT_NONE,
 		INPUT_IP,
@@ -61,13 +62,16 @@ int main(int argc, char **argv) {
 	} input_type = INPUT_NONE;
 	char option;
 
-	while ((option = getopt(argc, argv, "46")) != -1) {
+	while ((option = getopt(argc, argv, "46r")) != -1) {
 		switch (option) {
 			case '4':
 				hints.ai_family = AF_INET;
 				break;
 			case '6':
 				hints.ai_family = AF_INET6;
+				break;
+			case 'r':
+				show_rdns = 1;
 				break;
 			default:
 				PRINT_USAGE;
@@ -97,7 +101,7 @@ int main(int argc, char **argv) {
 		}
 		if (input_type == INPUT_HOST)
 			puts(ip_address);
-		else {
+		if ((input_type == INPUT_IP) || (show_rdns == 1)) {
 			ret = getnameinfo(address->ai_addr, address->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
 			if (ret != 0) {
 				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(ret));
