@@ -12,7 +12,7 @@ install: bin/host
 	cp bin/host $(prefix)/bin/host
 	cp man/man1/host.1 $(prefix)/share/man/man1
 	chmod 755 $(prefix)/bin/host
-	chmod 755 $(prefix)/share/man/man1/host.1
+	chmod 644 $(prefix)/share/man/man1/host.1
 
 uninstall:
 	rm -f $(prefix)/bin/host
