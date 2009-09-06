@@ -10,7 +10,7 @@ bin/%: src/%.c
 install: bin/host
 	mkdir -p $(prefix)/bin $(prefix)/share/man/man1
 	cp bin/host $(prefix)/bin/host
-	cp man/man1/host.1 $(prefix)/share/man/man1
+	cp man/1/host $(prefix)/share/man/man1/host.1
 	chmod 755 $(prefix)/bin/host
 	chmod 644 $(prefix)/share/man/man1/host.1
 
