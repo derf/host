@@ -6,9 +6,7 @@
 .Nd look up hostnames or IPs
 .Sh SYNOPSIS
 .Nm
-.Op Fl 4
-.Op Fl 6
-.Op Fl r
+.Op Fl 46r
 .Ar host
 .Sh DESCRIPTION
 .Nm
