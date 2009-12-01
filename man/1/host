@@ -1,21 +1,27 @@
-.TH HOST 1 "2009-10-19" "Daniel Friesel" "User Commands"
-.SH "NAME"
-\fBhost\fR \- look up hostnames or IPs
-.SH "SYNOPSIS"
-\fBhost\fR [\fB-46r\fR] \fIhost\fR
-.SH "DESCRIPTION"
-\fBhost\fR looks up \fIhost\fR (hostname or IP address) and returns the results,
-one item per line.
+.Dd December 1, 2009
+.Dt HOST 1
+.Os
+.Sh NAME
+.Nm host
+.Nd look up hostnames or IPs
+.Sh SYNOPSIS
+.Nm
+.Op Fl 4
+.Op Fl 6
+.Op Fl r
+.Ar host
+.Sh DESCRIPTION
+.Nm
+looks up
+.Ar host
+(hostname or IP address) and returns the results, one item per line.
 That is, it will either perform a DNS or RDNS lookup, depending on the input.
-.SH "OPTIONS"
-.TP 
-\fB-4\fR
-Only perfom IPv4 lookups
-
-.TP 
-\fB-6\fR
-Only perform IPv6 lookups
-
-.TP 
-\fB-r\fR
+.Sh OPTIONS
+.Bl -tag -width
+.It Fl 4
+Only perform IPv4 (A) lookups
+.It Fl 6
+Only perform IPv6 (AAAA) lookups
+.It Fl r
 Always print the RDNS
+.El
