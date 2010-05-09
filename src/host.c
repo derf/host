@@ -12,21 +12,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-/**
- * \brief Print some usage information
- */
-
 #define PRINT_USAGE \
 	fprintf(stderr, "Usage: %s [-46r] <hostname>\n", argv[0])
-
-/**
- * \brief convert addrinfo to simple IP address
- *
- * \param address addrinfo struct containing the IP
- * \param ip string for the resulting IP
- * \param length length of ip
- * \return 0 on failure, 1 on success
- */
 
 static inline int addr_to_ip(const struct addrinfo *address, char *ip, int length) {
 	void *ptr;
