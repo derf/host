@@ -1,22 +1,22 @@
-CFLAGS = -Wall -Wextra -pedantic -O2
-prefix = /usr/local
+include config.mk
 
 all: bin/host
 
-bin/%: src/%.c
+bin/host: src/host.c
 	mkdir -p bin
-	$(CC) $(CFLAGS) -o $@ $<
+	${CC} ${CFLAGS} -o $@ $<
 
 install: bin/host
-	mkdir -p $(prefix)/bin $(prefix)/share/man/man1
-	cp bin/host $(prefix)/bin/host
-	cp man/1/host $(prefix)/share/man/man1/host.1
-	chmod 755 $(prefix)/bin/host
-	chmod 644 $(prefix)/share/man/man1/host.1
+	@echo installing bin to ${bin_dir} and man to ${man_dir}
+	@mkdir -p ${bin_dir} ${man_dir}/man1
+	@cp bin/host ${bin_dir}/host
+	@cp man/1/host ${man_dir}/man1/host.1
+	@chmod 755 ${bin_dir}/host
+	@chmod 644 ${man_dir}/man1/host.1
 
 uninstall:
-	rm -f $(prefix)/bin/host
-	rm -f $(prefix)/share/man/man1/host.1
+	rm -f ${bin_dir}/host
+	rm -f ${man_dir}/man1/host.1
 
 clean:
 	rm -f bin/host
