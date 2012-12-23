@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 		INPUT_IP,
 		INPUT_HOST
 	} input_type = INPUT_NONE;
-	char option;
+	signed char option;
 
 	while ((option = getopt(argc, argv, "46r")) != -1) {
 		switch (option) {
