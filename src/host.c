@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 by Daniel Friesel <derf@derf.homelinux.org>
+ * Copyright © 2009 by Daniel Friesel <derf@finalrewind.org>
  * License: WTFPL <http://sam.zoy.org/wtfpl>
  */
 
